@@ -40,6 +40,11 @@ on:
         required: true
         type: string
 
+      version:
+        description: "App Version for AltSource.json"
+        required: true
+        type: string
+
       tweak_version:
         description: "The version of the tweak to use. Enter the version manually from dayanch96/YTLite/releases or leave default"
         default: "5.2b4"
@@ -305,13 +310,61 @@ jobs:
 
           cyan -i youtube.ipa -o YouTubePlus_${{ inputs.tweak_version }}.ipa -uwef $tweaks -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
 
+            - name: Checkout repo for pushing updates
+        uses: actions/checkout@v4
+        with:
+          path: repo
+          persist-credentials: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Update ClassicSource.json date and version, then push
+        run: |
+          set -euo pipefail
+
+          FILE="repo/AltSource/ClassicSource.json"
+
+          if [ ! -f "$FILE" ]; then
+            echo "::error::ClassicSource.json not found at $FILE"
+            exit 1
+          fi
+
+          current_date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          new_version="${{ inputs.version }}"
+
+          echo "Setting new date: $current_date"
+          echo "Setting new version: $new_version"
+
+          cp "$FILE" "$FILE.bak"
+
+          # Datum & Version setzen
+          jq --arg date "$current_date" --arg version "$new_version" \
+            '.apps[0].versions[0].date = $date | .apps[0].versions[0].version = $version' \
+            "$FILE" > "$FILE.tmp"
+
+          mv "$FILE.tmp" "$FILE"
+
+          echo "---- Diff (old -> new) ----"
+          git --no-pager diff --no-index -- "$FILE.bak" "$FILE" || true
+          echo "---------------------------"
+
+          cd repo
+          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions"
+          git add AltSource/ClassicSource.json
+          if git commit -m "CI: update ClassicSource.json date to $current_date and version to $new_version"; then
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No changes to commit."
+          fi
+
       - name: Upload to GitHub Releases
         uses: softprops/action-gh-release@v2.0.1
         with:
           tag_name: ytp-${{ github.run_number }}
           name: YouTubePlus v${{ inputs.tweak_version }} (${{ github.run_number }})
           files: YouTubePlus_${{ inputs.tweak_version }}.ipa
-          draft: true
+          draft: false
 
       - name: Output Release URL
         run: |
