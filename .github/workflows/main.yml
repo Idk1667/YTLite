@@ -75,7 +75,7 @@ concurrency:
 
 jobs:
   build:
-    name: Build YouTubePlus.ipa
+    name:
     runs-on: macos-latest
     permissions:
       contents: write
