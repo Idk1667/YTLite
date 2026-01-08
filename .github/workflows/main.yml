@@ -75,7 +75,7 @@ concurrency:
 
 jobs:
   build:
-    name: 
+    name: Build YouTubePlus.ipa
     runs-on: macos-latest
     permissions:
       contents: write
@@ -363,7 +363,7 @@ jobs:
         with:
           tag_name: ytp-${{ github.run_number }}
           name: YouTubePlus v${{ inputs.tweak_version }} (${{ github.run_number }})
-          files: YouTubePlus_${{ inputs.tweak_version }}.ipa
+          files: YouTubePlus.ipa
           draft: true
 
       - name: Output Release URL
