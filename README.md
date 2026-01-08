@@ -1,5 +1,9 @@
 # YouTube Plus (ex. YTLite)
 A flexible enhancer for YouTube on iOS, featuring over hundred customizable options.
+<a href="https://celloserenity.github.io/altdirect/?url=https://raw.githubusercontent.com/Idk1667/YTLite/refs/heads/main/AltSource/ClassicSource.json" target="_blank">
+   <img src="https://github.com/CelloSerenity/altdirect/blob/main/assets/png/AltSource_Blue.png?raw=true" alt="Add AltSource" width="200">
+</a>
+AltSource adder, works only for collabolators (and owner) that are signed into their github in their signer
 
 ## Table of Contents
 - [Screenshots](#screenshots)
