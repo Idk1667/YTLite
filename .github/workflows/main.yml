@@ -310,7 +310,15 @@ jobs:
 
           cyan -i youtube.ipa -o YouTubePlus_${{ inputs.tweak_version }}.ipa -uwef $tweaks -n "${{ inputs.display_name }}" -b ${{ inputs.bundle_id }}
 
-            - name: Checkout repo for pushing updates
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v2.0.1
+        with:
+          tag_name: ytp-${{ github.run_number }}
+          name: YouTubePlus v${{ inputs.tweak_version }} (${{ github.run_number }})
+          files: YouTubePlus.ipa
+          draft: true
+
+      - name: Checkout repo for pushing updates
         uses: actions/checkout@v4
         with:
           path: repo
@@ -357,14 +365,6 @@ jobs:
           else
             echo "No changes to commit."
           fi
-
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v2.0.1
-        with:
-          tag_name: ytp-${{ github.run_number }}
-          name: YouTubePlus v${{ inputs.tweak_version }} (${{ github.run_number }})
-          files: YouTubePlus.ipa
-          draft: true
 
       - name: Output Release URL
         run: |
