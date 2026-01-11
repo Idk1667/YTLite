@@ -316,7 +316,7 @@ jobs:
           tag_name: ytp-${{ github.run_number }}
           name: YouTubePlus v${{ inputs.tweak_version }} (${{ github.run_number }})
           files: YouTubePlus.ipa
-          draft: true
+          draft: false
 
       - name: Checkout repo for pushing updates
         uses: actions/checkout@v4
